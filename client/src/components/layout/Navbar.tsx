@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RoomState, User } from '../../types';
-import { Share2, Volume2, VolumeX, Settings, Check, Sparkles } from 'lucide-react';
+import { Share2, Volume2, VolumeX, Settings, Check, Edit3 } from 'lucide-react';
 import { setSoundMuted, getSoundMuted } from '../../utils/audio';
 
 interface NavbarProps {
@@ -8,6 +8,7 @@ interface NavbarProps {
   currentUser: User | null;
   isConnected: boolean;
   onOpenSettings: () => void;
+  onOpenProfile: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -15,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   isConnected,
   onOpenSettings,
+  onOpenProfile,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isMuted, setIsMuted] = useState(getSoundMuted());
@@ -107,14 +109,25 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Settings className="w-4 h-4" />
           </button>
 
-          {/* Current User Pill */}
+          {/* Current User Pill (Click to edit profile) */}
           {currentUser && (
-            <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800">
-              <span className="text-lg">{currentUser.avatar}</span>
-              <span className="text-xs font-semibold text-slate-200 hidden lg:inline max-w-[100px] truncate">
-                {currentUser.name}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={onOpenProfile}
+              className="flex items-center gap-1.5 pl-2.5 pr-2 py-1 border-l border-slate-800 hover:bg-slate-800/80 rounded-xl transition-all cursor-pointer group"
+              title="Clique para editar seu nome, avatar ou papel"
+            >
+              <span className="text-lg group-hover:scale-110 transition-transform">{currentUser.avatar}</span>
+              <div className="flex flex-col text-left hidden sm:flex">
+                <span className="text-xs font-semibold text-slate-200 group-hover:text-indigo-300 max-w-[100px] truncate leading-tight transition-colors">
+                  {currentUser.name}
+                </span>
+                <span className="text-[10px] text-slate-500 leading-tight">
+                  {currentUser.role === 'spectator' ? 'Observador' : 'Votante'}
+                </span>
+              </div>
+              <Edit3 className="w-3 h-3 text-slate-500 group-hover:text-indigo-400 ml-0.5 transition-colors" />
+            </button>
           )}
         </div>
       </div>

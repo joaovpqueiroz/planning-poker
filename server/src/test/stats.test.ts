@@ -108,5 +108,17 @@ describe('Planning Poker - RoomManager State Management', () => {
     assert.strictEqual(manager.getRoom(room.id)!.isRevealed, false);
     assert.strictEqual(manager.getRoom(room.id)!.users['usr-1'].hasVoted, false);
     assert.strictEqual(manager.getRoom(room.id)!.users['usr-1'].vote, null);
+
+    // Edit user profile (name, avatar, role)
+    manager.updateUserProfile(room.id, 'usr-2', {
+      name: 'Bob Master',
+      avatar: '🦖',
+      role: 'spectator',
+    });
+    const updatedUser2 = manager.getRoom(room.id)!.users['usr-2'];
+    assert.strictEqual(updatedUser2.name, 'Bob Master');
+    assert.strictEqual(updatedUser2.avatar, '🦖');
+    assert.strictEqual(updatedUser2.role, 'spectator');
+    assert.strictEqual(updatedUser2.vote, null);
   });
 });

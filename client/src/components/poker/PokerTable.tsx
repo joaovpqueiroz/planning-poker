@@ -1,7 +1,7 @@
 import React from 'react';
 import { RoomState, RoundStats, User } from '../../types';
 import { PokerCard } from './PokerCard';
-import { Crown, Eye, Play, RotateCcw, Sparkles } from 'lucide-react';
+import { Crown, Eye, RotateCcw, Sparkles, Edit3 } from 'lucide-react';
 
 interface PokerTableProps {
   room: RoomState;
@@ -10,6 +10,7 @@ interface PokerTableProps {
   onReveal: () => void;
   onReset: () => void;
   onTransferFacilitator: (userId: string) => void;
+  onOpenProfile?: () => void;
 }
 
 export const PokerTable: React.FC<PokerTableProps> = ({
@@ -19,6 +20,7 @@ export const PokerTable: React.FC<PokerTableProps> = ({
   onReveal,
   onReset,
   onTransferFacilitator,
+  onOpenProfile,
 }) => {
   const users = Object.values(room.users).filter((u) => u.connected);
   const players = users.filter((u) => u.role === 'player');
@@ -138,7 +140,17 @@ export const PokerTable: React.FC<PokerTableProps> = ({
                   <span className="text-xs font-semibold text-slate-200 truncate max-w-[90px]" title={user.name}>
                     {user.name}
                   </span>
-                  {isCurrent && <span className="text-[10px] text-indigo-400 font-bold">(você)</span>}
+                  {isCurrent && (
+                    <button
+                      type="button"
+                      onClick={onOpenProfile}
+                      className="text-[10px] text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-0.5 cursor-pointer hover:underline"
+                      title="Editar seu nome e avatar"
+                    >
+                      <span>(você)</span>
+                      <Edit3 className="w-2.5 h-2.5 opacity-70" />
+                    </button>
+                  )}
                 </div>
 
                 {/* Status Indicator */}
@@ -180,7 +192,17 @@ export const PokerTable: React.FC<PokerTableProps> = ({
             >
               <span>{spec.avatar}</span>
               <span>{spec.name}</span>
-              {currentUser?.id === spec.id && <span className="text-[10px] text-indigo-400">(você)</span>}
+              {currentUser?.id === spec.id && (
+                <button
+                  type="button"
+                  onClick={onOpenProfile}
+                  className="text-[10px] text-indigo-400 hover:text-indigo-300 font-bold flex items-center gap-0.5 cursor-pointer hover:underline"
+                  title="Editar seu perfil"
+                >
+                  <span>(você)</span>
+                  <Edit3 className="w-2.5 h-2.5 opacity-70" />
+                </button>
+              )}
             </div>
           ))}
         </div>

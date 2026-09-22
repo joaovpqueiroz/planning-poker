@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { RoomState, RoundStats, User } from '../types';
+import { RoomState, RoundStats, User, Role } from '../types';
 import { playConsensusSound, playRevealSound, playVoteSound } from '../utils/audio';
 import { fireConsensusConfetti } from '../utils/confetti';
 
@@ -120,6 +120,19 @@ export function usePokerSocket(roomId?: string) {
     socketRef.current.emit('facilitator:transfer', { targetUserId });
   }, []);
 
+  const updateProfile = useCallback(
+    (data: { name: string; avatar: string; role?: Role }) => {
+      if (!socketRef.current) return;
+      localStorage.setItem('poker_username', data.name);
+      localStorage.setItem('poker_avatar', data.avatar);
+      if (data.role) {
+        localStorage.setItem('poker_role', data.role);
+      }
+      socketRef.current.emit('user:update-profile', data);
+    },
+    []
+  );
+
   return {
     isConnected,
     room,
@@ -134,5 +147,6 @@ export function usePokerSocket(roomId?: string) {
     selectStory,
     estimateStory,
     transferFacilitator,
+    updateProfile,
   };
 }

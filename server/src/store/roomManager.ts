@@ -226,6 +226,35 @@ export class RoomManager {
     return room;
   }
 
+  updateUserProfile(
+    roomId: string,
+    userId: string,
+    data: { name?: string; avatar?: string; role?: 'player' | 'spectator' }
+  ): RoomState | undefined {
+    const room = this.rooms.get(roomId);
+    if (!room) return undefined;
+
+    const user = room.users[userId];
+    if (!user) return undefined;
+
+    if (data.name !== undefined && data.name.trim()) {
+      user.name = data.name.trim();
+    }
+    if (data.avatar !== undefined && data.avatar.trim()) {
+      user.avatar = data.avatar.trim();
+    }
+    if (data.role !== undefined) {
+      user.role = data.role;
+      if (data.role === 'spectator') {
+        user.vote = null;
+        user.hasVoted = false;
+      }
+    }
+
+    room.lastActive = Date.now();
+    return room;
+  }
+
   private generateRoomId(): string {
     const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
     let id = '';

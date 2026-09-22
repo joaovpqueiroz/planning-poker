@@ -8,6 +8,7 @@ import { StoryManager } from './components/story/StoryManager';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LobbyModal } from './components/lobby/LobbyModal';
 import { CreateRoomLanding } from './components/lobby/CreateRoomLanding';
+import { EditProfileModal } from './components/profile/EditProfileModal';
 import { DeckType, Role } from './types';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:4000';
@@ -20,6 +21,7 @@ export function App() {
 
   const [hasJoined, setHasJoined] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const {
     isConnected,
@@ -35,6 +37,7 @@ export function App() {
     selectStory,
     estimateStory,
     transferFacilitator,
+    updateProfile,
   } = usePokerSocket(roomId || undefined);
 
   // Generate or retrieve persistent user ID
@@ -150,6 +153,7 @@ export function App() {
           currentUser={currentUser}
           isConnected={isConnected}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenProfile={() => setIsProfileOpen(true)}
         />
       )}
 
@@ -174,6 +178,7 @@ export function App() {
               onReveal={revealCards}
               onReset={resetRound}
               onTransferFacilitator={transferFacilitator}
+              onOpenProfile={() => setIsProfileOpen(true)}
             />
 
             {/* Stats Panel (when revealed) */}
@@ -209,6 +214,15 @@ export function App() {
           onClose={() => setIsSettingsOpen(false)}
           onUpdateSettings={updateSettings}
           onTransferFacilitator={transferFacilitator}
+        />
+      )}
+
+      {/* Edit Profile Modal */}
+      {isProfileOpen && currentUser && (
+        <EditProfileModal
+          currentUser={currentUser}
+          onClose={() => setIsProfileOpen(false)}
+          onSave={updateProfile}
         />
       )}
     </div>

@@ -167,6 +167,12 @@ io.on('connection', (socket) => {
     broadcastRoomState(currentRoomId);
   });
 
+  socket.on('user:update-profile', ({ name, avatar, role }) => {
+    if (!currentRoomId || !currentUserId) return;
+    roomManager.updateUserProfile(currentRoomId, currentUserId, { name, avatar, role });
+    broadcastRoomState(currentRoomId);
+  });
+
   socket.on('disconnect', () => {
     if (currentRoomId && currentUserId) {
       roomManager.leaveRoom(currentRoomId, currentUserId);
