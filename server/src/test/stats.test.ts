@@ -120,5 +120,21 @@ describe('Planning Poker - RoomManager State Management', () => {
     assert.strictEqual(updatedUser2.avatar, '🦖');
     assert.strictEqual(updatedUser2.role, 'spectator');
     assert.strictEqual(updatedUser2.vote, null);
+
+    // Update story details
+    manager.updateStory(room.id, storyId, {
+      title: 'JIRA-101 Login OAuth (Atualizado)',
+      description: 'Critérios de aceitação revisados',
+      link: 'https://jira.example.com/browse/JIRA-101',
+    });
+    const updatedStory = manager.getRoom(room.id)!.stories.find((s) => s.id === storyId)!;
+    assert.strictEqual(updatedStory.title, 'JIRA-101 Login OAuth (Atualizado)');
+    assert.strictEqual(updatedStory.description, 'Critérios de aceitação revisados');
+    assert.strictEqual(updatedStory.link, 'https://jira.example.com/browse/JIRA-101');
+
+    // Delete story
+    manager.deleteStory(room.id, storyId);
+    assert.strictEqual(manager.getRoom(room.id)!.stories.length, 0);
+    assert.strictEqual(manager.getRoom(room.id)!.currentStoryId, null);
   });
 });

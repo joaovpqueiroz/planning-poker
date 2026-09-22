@@ -161,6 +161,18 @@ io.on('connection', (socket) => {
     broadcastRoomState(currentRoomId);
   });
 
+  socket.on('story:update', ({ storyId, updates }) => {
+    if (!currentRoomId) return;
+    roomManager.updateStory(currentRoomId, storyId, updates);
+    broadcastRoomState(currentRoomId);
+  });
+
+  socket.on('story:delete', ({ storyId }) => {
+    if (!currentRoomId) return;
+    roomManager.deleteStory(currentRoomId, storyId);
+    broadcastRoomState(currentRoomId);
+  });
+
   socket.on('facilitator:transfer', ({ targetUserId }) => {
     if (!currentRoomId || !currentUserId) return;
     roomManager.transferFacilitator(currentRoomId, currentUserId, targetUserId);

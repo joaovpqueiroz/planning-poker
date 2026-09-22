@@ -210,6 +210,59 @@ export class RoomManager {
     return room;
   }
 
+  updateStory(
+    roomId: string,
+    storyId: string,
+    updates: { title?: string; description?: string; link?: string }
+  ): RoomState | undefined {
+    const room = this.rooms.get(roomId);
+    if (!room) return undefined;
+
+    const story = room.stories.find((s) => s.id === storyId);
+    if (!story) return undefined;
+
+    if (updates.title !== undefined && updates.title.trim()) {
+      story.title = updates.title.trim();
+    }
+    if (updates.description !== undefined) {
+      story.description = updates.description.trim() || undefined;
+    }
+    if (updates.link !== undefined) {
+      story.link = updates.link.trim() || undefined;
+    }
+
+    room.lastActive = Date.now();
+    return room;
+  }
+
+  deleteStory(roomId: string, storyId: string): RoomState | undefined {
+    const room = this.rooms.get(roomId);
+    if (!room) return undefined;
+
+    const index = room.stories.findIndex((s) => s.id === storyId);
+    if (index === -1) return undefined;
+
+    room.stories.splice(index, 1);
+
+    if (room.currentStoryId === storyId) {
+      const nextStory = room.stories.find((s) => s.status !== 'completed') || room.stories[0];
+      if (nextStory) {
+        room.currentStoryId = nextStory.id;
+        nextStory.status = 'voting';
+      } else {
+        room.currentStoryId = null;
+      }
+      room.isRevealed = false;
+      for (const u of Object.values(room.users)) {
+        u.vote = null;
+        u.hasVoted = false;
+      }
+    }
+
+    room.lastActive = Date.now();
+    return room;
+  }
+
   transferFacilitator(roomId: string, currentId: string, targetId: string): RoomState | undefined {
     const room = this.rooms.get(roomId);
     if (!room) return undefined;

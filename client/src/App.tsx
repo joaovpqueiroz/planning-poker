@@ -36,6 +36,8 @@ export function App() {
     addStory,
     selectStory,
     estimateStory,
+    updateStory,
+    deleteStory,
     transferFacilitator,
     updateProfile,
   } = usePokerSocket(roomId || undefined);
@@ -168,6 +170,8 @@ export function App() {
               isFacilitator={!!currentUser?.isFacilitator}
               onAddStory={addStory}
               onSelectStory={selectStory}
+              onUpdateStory={updateStory}
+              onDeleteStory={deleteStory}
             />
 
             {/* Poker Table Surface & Seats */}

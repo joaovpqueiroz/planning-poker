@@ -115,6 +115,19 @@ export function usePokerSocket(roomId?: string) {
     socketRef.current.emit('story:estimate', { storyId, estimate });
   }, []);
 
+  const updateStory = useCallback(
+    (storyId: string, updates: { title?: string; description?: string; link?: string }) => {
+      if (!socketRef.current) return;
+      socketRef.current.emit('story:update', { storyId, updates });
+    },
+    []
+  );
+
+  const deleteStory = useCallback((storyId: string) => {
+    if (!socketRef.current) return;
+    socketRef.current.emit('story:delete', { storyId });
+  }, []);
+
   const transferFacilitator = useCallback((targetUserId: string) => {
     if (!socketRef.current) return;
     socketRef.current.emit('facilitator:transfer', { targetUserId });
@@ -146,6 +159,8 @@ export function usePokerSocket(roomId?: string) {
     addStory,
     selectStory,
     estimateStory,
+    updateStory,
+    deleteStory,
     transferFacilitator,
     updateProfile,
   };
