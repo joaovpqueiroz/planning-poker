@@ -2,6 +2,9 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 import { RoomManager } from './store/roomManager.js';
 import { calculateRoundStats } from './utils/stats.js';
 import { RoomState, User } from './types.js';
@@ -192,6 +195,23 @@ io.on('connection', (socket) => {
     }
   });
 });
+
+// Serve frontend static files in production
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+      return next();
+    }
+    const indexPath = path.join(clientDistPath, 'index.html');
+    res.sendFile(indexPath);
+  });
+}
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {

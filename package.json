@@ -2,13 +2,19 @@
   "name": "planning-poker",
   "version": "1.0.0",
   "private": true,
+  "main": "server/dist/server.js",
   "scripts": {
+    "postinstall": "npm install --prefix server --include=dev && npm install --prefix client --include=dev",
     "install:all": "npm install && npm install --prefix server && npm install --prefix client",
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
-    "build": "npm run build --prefix server && npm run build --prefix client",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "start": "node server/dist/server.js",
     "test": "npm run test --prefix server"
+  },
+  "dependencies": {
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

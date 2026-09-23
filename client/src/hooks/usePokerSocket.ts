@@ -4,7 +4,11 @@ import { RoomState, RoundStats, User, Role } from '../types';
 import { playConsensusSound, playRevealSound, playVoteSound } from '../utils/audio';
 import { fireConsensusConfetti } from '../utils/confetti';
 
-const SOCKET_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:4000';
+const SOCKET_URL =
+  import.meta.env.VITE_SERVER_URL ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost' && window.location.port === '3000'
+    ? 'http://localhost:4000'
+    : '');
 
 export function usePokerSocket(roomId?: string) {
   const socketRef = useRef<Socket | null>(null);

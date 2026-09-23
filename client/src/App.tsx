@@ -11,7 +11,11 @@ import { CreateRoomLanding } from './components/lobby/CreateRoomLanding';
 import { EditProfileModal } from './components/profile/EditProfileModal';
 import { DeckType, Role } from './types';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:4000';
+const SERVER_URL =
+  import.meta.env.VITE_SERVER_URL ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost' && window.location.port === '3000'
+    ? 'http://localhost:4000'
+    : '');
 
 export function App() {
   const [roomId, setRoomId] = useState<string | null>(() => {
